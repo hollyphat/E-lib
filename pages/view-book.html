@@ -126,7 +126,7 @@
                 });
 
 
-                $("body").off('click', '#save-book').on('click', '#save-book',function(e) {
+                $("body").on('click', '#save-book',function(e) {
 
                     app.toast.create({
                         text: 'Adding book to Favourites books',
@@ -167,7 +167,7 @@
                 });
 
 
-                $("body").off('click', '#remove-book').on('click', '.remove-book',function(e) {
+                $("body").on('click', '#remove-book',function(e) {
                     app.toast.create({
                         text: 'Removing book, Please wait',
                         position: 'bottom',
