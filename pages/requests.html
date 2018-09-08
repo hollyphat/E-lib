@@ -1,0 +1,142 @@
+<template>
+    <div class="page" data-name="request">
+        <div class="fab fab-right-bottom">
+            <a href="#" class="finish-req color-teal">
+                <i class="icon material-icons md-only color-white">send</i>
+            </a>
+        </div>
+        <div class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="/" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Back</span>
+                    </a>
+                </div>
+                <div class="title">Request for books</div>                
+            </div>
+        </div>
+        <div class="page-content">
+            
+
+            <div class="block-title center">Book Request</div>
+            <div class="">
+                <div class="list">
+                    <ul>
+                        <li class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Book Name</div>
+                                <div class="item-input-wrap">
+                                    <input type="text" placeholder="Book Name" required validate id="book-name">
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="item-content item-input">
+                            <div class="item-inner">
+                                <div class="item-title item-label">Book Information</div>
+                                <div class="item-input-wrap">
+                                    <textarea required="" id="book_desc" class="resizable" placeholder="A brief information about the book"></textarea>
+                                </div>
+                            </div>
+                        </li>                        
+                        
+
+                    </ul>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    return {
+        on: {
+            pageInit: function() {
+                var app = this.$app;
+                var $$ = this.$;                
+                var router = this.$router;        
+                var user_id = sessionStorage.getItem("user_id");
+                if((user_id === "") || (user_id === null)){
+                    
+                    mainView.router.navigate('/login/');
+                    window.location = "index.html";
+                }
+                $(".finish-req").on("click", function(e) {
+                    e.preventDefault();
+                    //console.log($$("#up-btn"));
+                    //alert("Hello");
+
+                    
+
+                    //Get all vars
+                    var name = $("#book-name").val();
+                    var book_desc = $("#book_desc").val();
+                    var matric = sessionStorage.getItem("matric");
+                    
+                    if((name == "") || (book_desc == "")){
+                        var toasts = app.toast.create({
+                            text: 'All fields are required',
+                            position: 'center',
+                            closeTimeout: 3000
+                        });                        
+                        toasts.open();
+                        vibration();
+
+                        return;
+                    }
+
+                    //create ajax to submit form
+                    app.dialog.preloader('Submitting request!');
+                    $.ajax({
+                       url: url,
+                       type: 'post',
+                       dataType: 'json',
+                       crossDomain: true,
+                       timeout: 45000,
+                       data: {
+                           'send_request': '',
+                           'name': name,
+                           'book_desc': book_desc,                           
+                           'matric': matric
+                       },
+                        success: function (f) {
+                           //console.log(f);
+                           app.dialog.close();
+
+                            
+                                var t = app.toast.create({
+                                text: 'Your request has been sent!',
+                                position: 'center',
+                                closeTimeout: 3000
+                                }).open();
+
+                                $("#book-name").val('');
+                                $("#book_desc").val('');
+                            
+
+                            
+                        },
+                        error: function (e) {
+                           app.dialog.close();
+                           console.log(e);
+                           app.toast.create({
+                               text: 'Network error, please ensure that you have active internet connections!',
+                               position: 'center',
+                               closeTimeout: 3000
+                           }).open();
+                           vibration();
+
+                        }
+                    });
+
+
+                });                
+            }
+        },
+    }
+</script>

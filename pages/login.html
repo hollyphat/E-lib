@@ -1,0 +1,161 @@
+<template>
+        <div class="page" data-name="login">
+            <div class="navbar">
+                <div class="navbar-inner sliding">
+                    <div class="left">
+                        <a href="/" class="link">
+                            <i class="icon icon-back"></i>
+                            <span class="ios-only">Back</span>
+                        </a>
+                    </div>
+                    <div class="title">Login</div>                
+                </div>
+            </div>
+            <div class="page-content" >
+                <!--<div class="login-screen-title">Mobile Year Book</div>-->
+                <form class="login-form">
+                    <p class="center">
+                        <img src="img/logo.png">
+                    </p>
+
+                    <h5 class="center">Student Login</h5>
+                    <div class="list">
+                        <ul>
+                            <li class="item-content item-input item-input-with-value">                                
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Matric Number</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" required validate placeholder="Matric Number" id="user-matric" >
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content item-input">                                
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Password</div>
+                                    <div class="item-input-wrap">
+                                        <input type="password" placeholder="Your password" required validate id="user-password" class="user-password">
+                                        <span class="input-show-button"></span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="list">
+                        <div class="block">
+                            <div class="row">                                
+                                <div class="col-100">
+                                    <ul id="signIn-btn">
+                                        <li>
+                                            <a class="button button-round button-fill btn-login" href="#">Sign In</a>
+                                        </li>
+                                    </ul>
+                                    <div class="center hide" id="loader">
+                                        <div class="preloader color-multi"></div>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <a href="/forgot-password/">Forgot Password?</a>
+                        </div>
+                        <div class="block-footer">&nbsp;</div>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </template>
+    <script>
+        return {
+            on: {
+                pageInit: function() {
+                    var app = this.$app;                
+                    var user_id = sessionStorage.getItem("user_id");
+                    //console.log(user_id);
+                    if (user_id != "") {
+                        mainView.router.navigate("/home/",{});
+                    }
+                    
+    
+                    $("body").off('click', '.btn-login').on('click', '.btn-login',function(e) {
+                        e.preventDefault();
+                        var router = this.$router;
+    
+                        var matric = $("#user-matric").val();
+                        var password = $(".user-password").val();
+                        
+                        if (matric == "" || password == "") {
+                            
+                            app.toast.create({
+                                text: 'All fields are required',
+                                position: 'center',
+                                closeTimeout: 3000
+                            }).open();                        
+                            //self.toastIcon.open();
+                            vibration();
+    
+                            return false;
+                        }
+                        $("#signIn-btn").hide();
+                        $("#loader").removeClass('hide');
+    
+                        //ajax login
+                        $.ajax({
+                            url: url,
+                            type: 'post',
+                            dataType: 'json',
+                            crossDomain: true,
+                            timeout: 45000,
+                            data: {
+                                'login-ok': '',
+                                'matric': matric,
+                                'password': password
+                            },
+                            success: function(f) {
+                                //console.log(f);
+                                if (f.ok == 0) {
+                                    app.toast.create({
+                                        text: f.msg,
+                                        position: 'center',
+                                        closeTimeout: 3000
+                                    }).open();
+                                    vibration();
+                                    $("#signIn-btn").show();
+                                    $("#loader").addClass('hide');
+                                }else {
+                                    //console.log(f.datas);
+                                    var books = JSON.stringify(f.books);
+                                    
+                                    var saved_books = JSON.stringify(f.saved_books);
+                                    
+                                    //console.log(chats_lists);
+                                    sessionStorage.setItem("books",books);
+                                    
+                                    sessionStorage.setItem("user_id", f.datas['id']);
+                                    sessionStorage.setItem("name", f.datas['name']);
+                                    sessionStorage.setItem("email", f.datas['email']);
+                                    sessionStorage.setItem("phone", f.datas['phone']);
+                                    sessionStorage.setItem("matric", f.datas['matric']);
+                                    sessionStorage.setItem("saved_books",saved_books);
+                                    
+                                    $("#signIn-btn").show();
+                                    $("#loader").addClass('hide');
+                                    mainView.router.navigate("/home/",{});
+                                }                   
+                            },
+                            error: function(e) {
+                                app.toast.create({
+                                    text: 'Network error, please ensure that you have active internet connections!',
+                                    position: 'center',
+                                    closeTimeout: 3000
+                                }).open();
+
+                                vibration();
+                                //console.log(e.responseText);
+                                //alert(e.responseText);
+                                $("#signIn-btn").show();
+                                $("#loader").addClass('hide');
+                            }
+                        });                   
+                    });
+                }
+            },
+        }
+    </script>

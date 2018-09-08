@@ -1,0 +1,126 @@
+<template>
+    <div class="page" data-name="chat-home">        
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="link icon-only panel-open" data-panel="left">
+                        <i class="icon f7-icons ios-only">menu</i>
+                        <i class="icon material-icons md-only">menu</i>
+                      </a>
+                </div>
+                <div class="title">Mobile Library</div>                    
+        </div>
+
+        
+      </div>
+        <div class="page-content">
+            <div class="block-title">Welcome {{user_name}} - {{matric}}</div>
+            
+
+            <div class="list links-list">
+            <ul>
+              <li>
+                <a href="/books/" >All Books</a>
+              </li>
+              <li>
+                  <a href="/search/">Search Books</a>
+              </li>
+              <li>
+                <a href="/saved/" > Favourites Books</a>
+              </li>
+              <li>
+                  <a href="/requests/">Request for Books</a>
+              </li>
+              <li>
+                <a href="/profile/" > Profile</a>
+              </li>
+              
+              <li>
+                <a href="/about/" > About</a>
+              </li>
+              <li>
+                <a href="#" class="logout panel-close"> Logout</a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+
+        
+    </div>
+
+</template>
+<script>
+    return {        
+        on: {
+            pageInit: function() {
+                var app = this.$app;
+                var $$ = this.$;                
+                var router = this.$router;        
+                var user_id = sessionStorage.getItem("user_id");
+
+                //console.log(user_id);
+                if(user_id == null){
+                    //console.log("I am here..");
+                    window.location = "index.html";
+                    return;
+                }
+
+                document.addEventListener("backbutton", onBackKeyDown, false);
+
+                function onBackKeyDown() {
+                    app.dialog.confirm('Are you sure you want exit?', function () {
+                        //window.plugins.appMinimize.minimize();
+                        //cordova.plugins.exit();
+                        navigator.app.exitApp();
+                    });
+                    // Handle the back button
+                    
+                }
+            
+
+                
+
+                $("body").off('click', '.logout').on('click', '.logout',function(e) {
+                    app.dialog.confirm('Are you sure you want to logout?', function () {
+                        sessionStorage.removeItem("user_id");
+                        sessionStorage.removeItem("books");
+                        
+                        sessionStorage.removeItem("name");
+                        sessionStorage.removeItem("email");
+                        sessionStorage.removeItem("phone");
+                        sessionStorage.removeItem("matric");
+                        sessionStorage.removeItem("saved_books");                        
+                        app.view.main.history.pop();
+                        mainView.router.navigate("/",{});
+                    });
+                });
+
+                //clearInterval(myTimers);
+
+                
+                //updateStats();
+
+                
+
+                
+
+
+
+                
+            }
+
+
+            
+
+        },
+        data: function () {        
+            return {
+                user_name: sessionStorage.getItem("name"),
+                email: sessionStorage.getItem("email"),
+                phone: sessionStorage.getItem("phone"),
+                matric: sessionStorage.getItem("matric"),                
+            }
+        },
+    }
+</script>
