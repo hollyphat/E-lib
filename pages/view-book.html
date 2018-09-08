@@ -32,10 +32,10 @@
                 <div class="book-info">
                     
                 </div>                
-                <a href="" class="button" id="save-book" style="display: none;">
+                <a href="" class="button button-outline button-round" id="save-book" style="display: none;">
                     <i class="icon material-icons">favorite_border</i> Add to Favourites books
                 </a>
-                <a href="" class="button" id="remove-book" style="display: none;">
+                <a href="" class="button button-outline button-round" id="remove-book" style="display: none;">
                     <i class="icon material-icons">remove_circle_outline</i>Remove From Favourites books
                 </a>
             </div>
@@ -122,7 +122,7 @@
                 });
 
 
-                $("body").on("click","#save-book",function(e){
+                $("body").off('click', '#save-book').on('click', '#save-book',function(e) {
 
                     app.toast.create({
                         text: 'Adding book to Favourites books',
@@ -163,7 +163,7 @@
                 });
 
 
-                $("body").on("click","#remove-book",function(e){
+                $("body").off('click', '#remove-book').on('click', '.remove-book',function(e) {
                     app.toast.create({
                         text: 'Removing book, Please wait',
                         position: 'bottom',
